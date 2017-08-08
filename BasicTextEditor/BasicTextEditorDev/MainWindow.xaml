@@ -10,28 +10,14 @@
     mc:Ignorable="d"
     Title="MainWindow">
 
-    <Grid Initialized="Grid_Initialized">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <local:BasicTextEditor
-            Height="23"
-            Margin="5"
-            Width="120"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Text="BasicTextEditor">
-            <local:BasicTextEditor.ContextMenu>
-                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag}">
-                    <MenuItem Command="{Binding CutCommand}" Content="Cut" />
-                    <MenuItem Command="{Binding CopyCommand}" Content="Copy" />
-                    <MenuItem Command="{Binding PasteCommand}" Content="Paste" />
-                </ContextMenu>
-            </local:BasicTextEditor.ContextMenu>
-        </local:BasicTextEditor>
+        
     </Grid>
 
 </Window>

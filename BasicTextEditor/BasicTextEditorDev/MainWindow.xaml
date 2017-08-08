@@ -1,18 +1,37 @@
-﻿<Window x:Class="BasicTextEditorDev.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BasicTextEditorDev"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+﻿<Window
+    x:Class="BasicTextEditorDev.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:BasicTextEditorDev"
+    Height="350"
+    Width="525"
+    mc:Ignorable="d"
+    Title="MainWindow">
+
+    <Grid Initialized="Grid_Initialized">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-
+        <local:BasicTextEditor
+            Height="23"
+            Margin="5"
+            Width="120"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text="BasicTextEditor">
+            <local:BasicTextEditor.ContextMenu>
+                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag}">
+                    <MenuItem Command="{Binding CutCommand}" Content="Cut" />
+                    <MenuItem Command="{Binding CopyCommand}" Content="Copy" />
+                    <MenuItem Command="{Binding PasteCommand}" Content="Paste" />
+                </ContextMenu>
+            </local:BasicTextEditor.ContextMenu>
+        </local:BasicTextEditor>
     </Grid>
+
 </Window>

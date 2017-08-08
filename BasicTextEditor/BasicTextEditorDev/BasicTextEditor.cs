@@ -17,6 +17,23 @@ namespace BasicTextEditorDev
 {
     public class BasicTextEditor : TextBox
     {
+        public BasicTextEditor()
+        {
 
+        }
+
+        //TODO: eventhandlers til flg.
+        /*
+         * Fed skrift
+         * Kursiv skrift
+         * Skrift størrelse
+         * Skrift farve
+         * Tilføje et link til markeret tekst
+         */
+
+        private void MakeBold(object sender, EventArgs e)
+        {
+
+        }
     }
 }

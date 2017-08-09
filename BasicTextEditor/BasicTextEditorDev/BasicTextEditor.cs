@@ -51,7 +51,7 @@ namespace BasicTextEditorDev
 
         private void ToggleItalic(object sender, EventArgs e)
         {
-            base.Selection.ApplyPropertyValue(SourceProperty, FontStyles.Italic);
+            Selection.ApplyPropertyValue(SourceProperty, FontStyles.Italic);
         }
 
         private void IncreaseFontSize(object sender, EventArgs e)

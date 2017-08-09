@@ -5,14 +5,14 @@ using System.Windows.Controls;
 
 namespace BasicTextEditorDev
 {
-    public class BasicTextEditor : TextBox
+    public class BasicTextEditor : RichTextBox
     {
-        public TextBox Source
+        public RichTextBox Source
         {
-            get => (GetValue(SourceProperty) as TextBox); set => SetValue(SourceProperty, value);
+            get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value);
         }
         public static readonly DependencyProperty SourceProperty =
-          DependencyProperty.Register("Source", typeof(TextBox), typeof(BasicTextEditor));
+          DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
 
         //TODO: eventhandlers til flg.
         /*

@@ -21,20 +21,20 @@ namespace BasicTextEditorDev
 
         private void MakeBold(object sender, EventArgs e)
         {
-
+            FontWeight = FontWeights.Bold;
         }
 
-        private void MakeItallic(object sender, EventArgs e)
+        private void MakeItalic(object sender, EventArgs e)
         {
 
         }
 
-        private void FontSizeBigger(object sender, EventArgs e)
+        private void IncreaseFontSize(object sender, EventArgs e)
         {
 
         }
 
-        private void FontSizeSmaller(object sender, EventArgs e)
+        private void DecreaseFontSize(object sender, EventArgs e)
         {
 
         }

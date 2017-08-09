@@ -26,6 +26,10 @@ namespace BasicTextEditorDev
                 {
                     cm.Items.Add(new Separator());
                 }
+                if(i < 2)
+                {
+                    items[i].IsCheckable = true;
+                }
                 items[i].Header = menuItems[i];
                 cm.Items.Add(items[i]);
             }
@@ -47,7 +51,7 @@ namespace BasicTextEditorDev
 
         private void MakeItallic(object sender, EventArgs e)
         {
-
+            base.Selection.ApplyPropertyValue(SourceProperty, FontStyles.Italic);
         }
 
         private void IncreaseFontSize(object sender, EventArgs e)

@@ -20,6 +20,8 @@ namespace BasicTextEditorDev
     /// </summary>
     public partial class MainWindow : Window
     {
+        BasicTextEditor textEdit = new BasicTextEditor();
+
         public MainWindow()
         {
             InitializeComponent();

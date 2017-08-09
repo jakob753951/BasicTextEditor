@@ -1,77 +1,100 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Text.RegularExpressions;
 
 namespace BasicTextEditorDev
 {
     public class BasicTextEditor : RichTextBox
     {
+
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(RichTextBox), typeof (BasicTextEditor));
+
         public BasicTextEditor()
         {
-            string[] menuItems = new string[6] { "Bold", "Italic", "Increase font size", "Decrease font size", "Change colour", "Create link" };
             DataContext = this;
-            MenuItem[] items = new MenuItem[6];
-            for(int i = 0; i < items.Length; i++)
-            {
-                items[i] = new MenuItem();
-            }
-            ContextMenu cm = new ContextMenu();
-            MenuItem miBold = new MenuItem(), miItalics = new MenuItem(), miFontIncr = new MenuItem(), miFontDecr = new MenuItem(), miColour = new MenuItem(), miLink = new MenuItem();
+            string[] menuItemNames = new string[6] { "Bold", "Italic", "Increase font size", "Decrease font size", "Change colour", "Create link" };
+            MenuItem[] menuItems = new MenuItem[6];
 
+            //Initialize, and set header for the menuItems
             for(int i = 0; i < menuItems.Length; i++)
             {
-                if(i%2 == 0)
-                {
+                menuItems[i] = new MenuItem() { Header = menuItemNames[i] };
+            }
+
+            //TODO: Check if selected text is bold, and check/uncheck accordingly before showing
+            //Assign click events to their respective eventHandlers
+            menuItems[0].Click += new RoutedEventHandler(ToggleBold);
+            menuItems[1].Click += new RoutedEventHandler(ToggleItalic);
+            menuItems[2].Click += new RoutedEventHandler(IncreaseFontSize);
+            menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
+            menuItems[4].Click += new RoutedEventHandler(ChangeColour);
+            menuItems[5].Click += new RoutedEventHandler(AddLink);
+
+            ContextMenu cm = new ContextMenu();
+
+            for(int i = 0; i < menuItemNames.Length; i++)
+            {
+                //If i is not 0, and even
+                if(i!= 0 && i % 2 == 0)
+                    //Add a separator
                     cm.Items.Add(new Separator());
-                }
+
                 if(i < 2)
-                {
-                    items[i].IsCheckable = true;
-                }
-                items[i].Header = menuItems[i];
-                cm.Items.Add(items[i]);
+                    //make the item checkable
+                    menuItems[i].IsCheckable = true;
+                //Add the 'i'th item to the ContextMenu
+                cm.Items.Add(menuItems[i]);
             }
             ContextMenu = cm;
         }
 
-        public RichTextBox Source
+        private void ToggleBold(object sender, RoutedEventArgs e)
         {
-            get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value);
+            //If the selection isn't entirely in bold text
+            if(Selection.GetPropertyValue(FontWeightProperty).ToString() != FontWeights.Bold.ToString())
+                //Make it bold
+                Selection.ApplyPropertyValue(FontWeightProperty, FontWeights.Bold);
+            else
+                //Make it normal
+                Selection.ApplyPropertyValue(FontWeightProperty, FontWeights.Normal);
         }
 
-        public static readonly DependencyProperty SourceProperty =
-          DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
-
-        private void ToggleBold(object sender, EventArgs e)
+        private void ToggleItalic(object sender, RoutedEventArgs e)
         {
-            Selection.ApplyPropertyValue(SourceProperty, FontWeights.Bold);
+            //If the selection isn't entirely in italics
+            if(Selection.GetPropertyValue(FontStyleProperty).ToString() != FontStyles.Italic.ToString())
+                //Make it bold
+                Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
+            else
+                //Make it normal
+                Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Normal);
         }
 
-        private void ToggleItalic(object sender, EventArgs e)
+        //TODO: FIX THESE TWO. I DON'T UNDERSTAND WHAT IS HAPPENING!!!
+        private void IncreaseFontSize(object sender, RoutedEventArgs e)
         {
-            Selection.ApplyPropertyValue(SourceProperty, FontStyles.Italic);
+            Selection.ApplyPropertyValue(FontSizeProperty, FontSize++);
         }
 
-        private void IncreaseFontSize(object sender, EventArgs e)
+        private void DecreaseFontSize(object sender, RoutedEventArgs e)
         {
-
+            Selection.ApplyPropertyValue(FontSizeProperty, FontSize--);
         }
 
-        private void DecreaseFontSize(object sender, EventArgs e)
+        private void ChangeColour(object sender, RoutedEventArgs e)
         {
-
+            //TODO: Find and use a ColorPicker for this (somehow)
+           Selection.ApplyPropertyValue(ForegroundProperty, Brushes.HotPink);
         }
 
-        private void ChangeColour(object sender, EventArgs e)
+        private void AddLink(object sender, RoutedEventArgs e)
         {
-
+            //TODO: Add functionality
         }
 
-        private void AddLink(object sender, EventArgs e)
-        {
-
-        }
+        public RichTextBox Source { get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value); }
     }
 }

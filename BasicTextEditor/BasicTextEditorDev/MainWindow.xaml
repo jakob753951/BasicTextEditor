@@ -17,6 +17,20 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
+        <local:BasicTextEditor
+            x:Name="basicTextEditor"
+            BorderBrush="Black"
+            BorderThickness="3"
+            HorizontalAlignment="Stretch"
+            Margin="45,45,45,45"
+            VerticalAlignment="Stretch">
+            <FlowDocument>
+                <Paragraph>
+                    <Run
+                        Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce at lacus augue. Aenean nisi enim, molestie in augue vitae, efficitur pulvinar purus. Sed sit amet posuere dui. Suspendisse a posuere neque. Suspendisse condimentum urna leo, et varius nisl viverra nec. Donec nunc lectus, mattis ac scelerisque dictum, finibus efficitur justo. Sed venenatis pretium vestibulum. Maecenas placerat augue risus, quis pellentesque risus tincidunt a. Mauris commodo, lectus vel auctor dapibus, nibh tortor facilisis turpis, at imperdiet dui massa sed leo. Integer nunc ex, hendrerit sit amet vehicula at, aliquet at tellus. Fusce semper purus nisl, in pretium metus elementum a. Vestibulum tincidunt ultrices condimentum. Praesent molestie lorem nec magna rutrum, nec vulputate purus blandit. In ac orci sit amet sem dignissim congue. Aliquam fermentum urna ipsum, at vestibulum sem feugiat at. Mauris sollicitudin turpis at elit sagittis, vitae convallis dui placerat." />
+                </Paragraph>
+            </FlowDocument>
+        </local:BasicTextEditor>
 
     </Grid>
 

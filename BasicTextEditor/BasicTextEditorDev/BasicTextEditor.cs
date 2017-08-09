@@ -14,16 +14,32 @@ namespace BasicTextEditorDev
         public static readonly DependencyProperty SourceProperty =
           DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
 
-        //TODO: eventhandlers til flg.
-        /*
-         * Fed skrift
-         * Kursiv skrift
-         * Skrift størrelse
-         * Skrift farve
-         * Tilføje et link til markeret tekst
-         */
-
         private void MakeBold(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MakeItallic(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FontSizeBigger(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FontSizeSmaller(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ChangeColour(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddLink(object sender, EventArgs e)
         {
 
         }

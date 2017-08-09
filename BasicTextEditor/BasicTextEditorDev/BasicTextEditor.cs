@@ -12,19 +12,16 @@ namespace BasicTextEditorDev
 
         }
 
-        public RichTextBox Source
-        {
-            get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value);
-        }
+        public RichTextBox Source { get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value); }
         public static readonly DependencyProperty SourceProperty =
           DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
 
-        private void MakeBold(object sender, EventArgs e)
+        private void ToggleBold(object sender, EventArgs e)
         {
-            FontWeight = FontWeights.Bold;
+            Selection.ApplyPropertyValue(SourceProperty, FontWeights.Bold);
         }
 
-        private void MakeItalic(object sender, EventArgs e)
+        private void ToggleItalic(object sender, EventArgs e)
         {
 
         }

@@ -17,6 +17,17 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
+        <local:BasicTextEditor HorizontalAlignment="Left"
+                               Height="100"
+                               Margin="194,123,0,0"
+                               VerticalAlignment="Top"
+                               Width="100">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="BasicTextEditor" />
+                </Paragraph>
+            </FlowDocument>
+        </local:BasicTextEditor>
 
     </Grid>
 

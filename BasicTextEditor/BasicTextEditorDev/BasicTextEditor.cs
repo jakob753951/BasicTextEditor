@@ -40,12 +40,12 @@ namespace BasicTextEditorDev
         public static readonly DependencyProperty SourceProperty =
           DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
 
-        private void MakeBold(object sender, EventArgs e)
+        private void ToggleBold(object sender, EventArgs e)
         {
-            base.Selection.ApplyPropertyValue(SourceProperty, FontWeights.Bold);
+            Selection.ApplyPropertyValue(SourceProperty, FontWeights.Bold);
         }
 
-        private void MakeItallic(object sender, EventArgs e)
+        private void ToggleItalic(object sender, EventArgs e)
         {
 
         }

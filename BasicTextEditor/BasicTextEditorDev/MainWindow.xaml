@@ -34,10 +34,10 @@
             <local:BasicTextEditor.ContextMenu>
                 <ContextMenu>
                     <MenuItem
-                        Header="Make bold"
+                        Header="Bold"
                         IsCheckable="True" />
                     <MenuItem
-                        Header="Make italic"
+                        Header="Italic"
                         IsCheckable="True"  />
                     <Separator />
                     <MenuItem

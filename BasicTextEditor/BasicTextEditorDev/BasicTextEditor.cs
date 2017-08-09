@@ -10,9 +10,9 @@ namespace BasicTextEditorDev
     {
         public BasicTextEditor()
         {
-            string[] menuItems = new string[8] { "Bold", "Italic", null, "Increase font size", "Decrease font size", null, "Change colour", "Create link" };
+            string[] menuItems = new string[6] { "Bold", "Italic", "Increase font size", "Decrease font size", "Change colour", "Create link" };
             DataContext = this;
-            MenuItem[] items = new MenuItem[8];
+            MenuItem[] items = new MenuItem[6];
             for(int i = 0; i < items.Length; i++)
             {
                 items[i] = new MenuItem();
@@ -22,17 +22,14 @@ namespace BasicTextEditorDev
 
             for(int i = 0; i < menuItems.Length; i++)
             {
-                if(menuItems[i] != null)
-                {
-                    items[i].Header = menuItems[i];
-                    cm.Items.Add(items[i]);
-                }
-                else
+                if(i%2 == 0)
                 {
                     cm.Items.Add(new Separator());
                 }
+                items[i].Header = menuItems[i];
+                cm.Items.Add(items[i]);
             }
-            this.ContextMenu = cm;
+            ContextMenu = cm;
         }
 
         public RichTextBox Source

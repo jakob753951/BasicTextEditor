@@ -7,6 +7,11 @@ namespace BasicTextEditorDev
 {
     public class BasicTextEditor : RichTextBox
     {
+        public BasicTextEditor()
+        {
+
+        }
+
         public RichTextBox Source
         {
             get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value);

@@ -52,6 +52,7 @@ namespace BasicTextEditorDev
             }
             ContextMenu = cm;
             this.ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
+            AutoWordSelection = false;
         }
 
         private void ToggleBold(object sender, RoutedEventArgs e)
@@ -92,7 +93,7 @@ namespace BasicTextEditorDev
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
            //TODO: Find and use a ColorPicker for this (somehow)
-           Selection.ApplyPropertyValue(ForegroundProperty, Brushes.HotPink);
+           Selection.ApplyPropertyValue(ForegroundProperty, $"#{(123456).ToString()}");
         }
 
         private void AddLink(object sender, RoutedEventArgs e)
@@ -102,12 +103,16 @@ namespace BasicTextEditorDev
 
         private void ContextMenuClick(object sender, RoutedEventArgs e)
         {
-            MenuItem mi = (MenuItem)ContextMenu.Items.GetItemAt(1);
+            MenuItem[] mi = new MenuItem[] { (MenuItem)ContextMenu.Items.GetItemAt(0), (MenuItem)ContextMenu.Items.GetItemAt(1)};
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() == FontWeights.Bold.ToString())
-                mi.IsChecked = true;
+                mi[0].IsChecked = true;
             else
-                mi.IsChecked = false;
-            //cm.Items[1] = mi;
+                mi[0].IsChecked = false;
+
+            if(Selection.GetPropertyValue(FontStyleProperty).ToString() == FontStyles.Italic.ToString())
+                mi[1].IsChecked = true;
+            else
+                mi[1].IsChecked = false;
         }
 
         public RichTextBox Source { get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value); }

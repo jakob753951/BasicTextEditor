@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace BasicTextEditorDev
 {
@@ -11,6 +12,8 @@ namespace BasicTextEditorDev
     {
 
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(RichTextBox), typeof (BasicTextEditor));
+
+        private ContextMenu cm = new ContextMenu();
 
         public BasicTextEditor()
         {
@@ -24,7 +27,8 @@ namespace BasicTextEditorDev
                 menuItems[i] = new MenuItem() { Header = menuItemNames[i] };
             }
 
-            //TODO: Check if selected text is bold, and check/uncheck accordingly before showing
+            //TODO: Check if selected text is bold/italicized, and check/uncheck accordingly before showing
+
             //Assign click events to their respective eventHandlers
             menuItems[0].Click += new RoutedEventHandler(ToggleBold);
             menuItems[1].Click += new RoutedEventHandler(ToggleItalic);
@@ -32,8 +36,7 @@ namespace BasicTextEditorDev
             menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
             menuItems[4].Click += new RoutedEventHandler(ChangeColour);
             menuItems[5].Click += new RoutedEventHandler(AddLink);
-
-            ContextMenu cm = new ContextMenu();
+            cm.ContextMenuOpening += new ContextMenuEventHandler(ContextMenuClick);
 
             for(int i = 0; i < menuItemNames.Length; i++)
             {
@@ -56,6 +59,7 @@ namespace BasicTextEditorDev
             //If the selection isn't entirely in bold text
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() != FontWeights.Bold.ToString())
                 //Make it bold
+                //
                 Selection.ApplyPropertyValue(FontWeightProperty, FontWeights.Bold);
             else
                 //Make it normal
@@ -74,6 +78,7 @@ namespace BasicTextEditorDev
         }
 
         //TODO: FIX THESE TWO. I DON'T UNDERSTAND WHAT IS HAPPENING!!!
+        //TODO: Add hover event
         private void IncreaseFontSize(object sender, RoutedEventArgs e)
         {
             Selection.ApplyPropertyValue(FontSizeProperty, FontSize++);
@@ -86,13 +91,23 @@ namespace BasicTextEditorDev
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
-            //TODO: Find and use a ColorPicker for this (somehow)
+           //TODO: Find and use a ColorPicker for this (somehow)
            Selection.ApplyPropertyValue(ForegroundProperty, Brushes.HotPink);
         }
 
         private void AddLink(object sender, RoutedEventArgs e)
         {
             //TODO: Add functionality
+        }
+
+        private void ContextMenuClick(object sender, ContextMenuEventArgs e)
+        {
+            MenuItem mi = (MenuItem)ContextMenu.Items.GetItemAt(1);
+            if(Selection.GetPropertyValue(FontWeightProperty).ToString() == FontWeights.Bold.ToString())
+                mi.IsChecked = true;
+            else
+                mi.IsChecked = false;
+            ContextMenu.Items[1] = mi;
         }
 
         public RichTextBox Source { get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value); }

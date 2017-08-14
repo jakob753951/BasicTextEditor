@@ -19,12 +19,7 @@
         </Grid.ColumnDefinitions>
         <local:BasicTextEditor
             x:Name="basicTextEditor"
-            BorderBrush="Black"
-            BorderThickness="3"
-            HorizontalAlignment="Stretch"
-            Margin="45"
-            VerticalAlignment="Stretch"
-            DataContext="BasicTextEditor">
+            Margin="50">
             <FlowDocument>
                 <Paragraph>
                     <Run

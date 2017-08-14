@@ -36,7 +36,6 @@ namespace BasicTextEditorDev
             menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
             menuItems[4].Click += new RoutedEventHandler(ChangeColour);
             menuItems[5].Click += new RoutedEventHandler(AddLink);
-            cm.ContextMenuOpening += new ContextMenuEventHandler(ContextMenuClick);
 
             for(int i = 0; i < menuItemNames.Length; i++)
             {
@@ -52,6 +51,7 @@ namespace BasicTextEditorDev
                 cm.Items.Add(menuItems[i]);
             }
             ContextMenu = cm;
+            this.ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
         }
 
         private void ToggleBold(object sender, RoutedEventArgs e)
@@ -100,14 +100,14 @@ namespace BasicTextEditorDev
             //TODO: Add functionality
         }
 
-        private void ContextMenuClick(object sender, ContextMenuEventArgs e)
+        private void ContextMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem mi = (MenuItem)ContextMenu.Items.GetItemAt(1);
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() == FontWeights.Bold.ToString())
                 mi.IsChecked = true;
             else
                 mi.IsChecked = false;
-            ContextMenu.Items[1] = mi;
+            //cm.Items[1] = mi;
         }
 
         public RichTextBox Source { get => (GetValue(SourceProperty) as RichTextBox); set => SetValue(SourceProperty, value); }

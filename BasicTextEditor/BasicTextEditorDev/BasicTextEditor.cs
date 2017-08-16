@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace BasicTextEditorDev
 {
@@ -51,7 +52,7 @@ namespace BasicTextEditorDev
                 cm.Items.Add(menuItems[i]);
             }
             ContextMenu = cm;
-            this.ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
+            ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
             AutoWordSelection = false;
         }
 
@@ -60,7 +61,6 @@ namespace BasicTextEditorDev
             //If the selection isn't entirely in bold text
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() != FontWeights.Bold.ToString())
                 //Make it bold
-                //
                 Selection.ApplyPropertyValue(FontWeightProperty, FontWeights.Bold);
             else
                 //Make it normal
@@ -71,11 +71,71 @@ namespace BasicTextEditorDev
         {
             //If the selection isn't entirely in italics
             if(Selection.GetPropertyValue(FontStyleProperty).ToString() != FontStyles.Italic.ToString())
-                //Make it bold
-                Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
+            {
+                TextPointer originalSelectionStart = Selection.Start;
+                //The position of the last character in the selection
+                TextPointer originalSelectionEnd = Selection.End;
+                //The position of the character after the last character in the selection
+                //TextPointer nextChar = Selection.End.GetNextContextPosition(LogicalDirection.Forward);
+                //Expands the selection
+                //Selection.Select(Selection.Start, nextChar);
+                //Checks if the last character is " "
+
+                TextPointer tempSelectionStart = Selection.Start;
+                TextPointer tempSelectionEnd = tempSelectionStart.GetPositionAtOffset(1);
+                List<char> italicChar = new List<char>();
+                List<char> normalChar = new List<char>();
+
+                foreach(char c in Selection.Text)
+                {
+                    Selection.Select(tempSelectionStart, tempSelectionEnd);
+                    if(Selection.GetPropertyValue(FontStyleProperty).ToString() == FontStyles.Italic.ToString())
+                    {
+                        italicChar.Add(c);
+                    }
+                    else
+                    {
+                        normalChar.Add(c);
+                    }
+                    tempSelectionStart = tempSelectionStart.GetPositionAtOffset(1);
+                    tempSelectionEnd = tempSelectionStart.GetPositionAtOffset(1);
+                }
+
+                Selection.Select(originalSelectionStart, originalSelectionEnd);
+
+                for(int i = 1; i <= normalChar.Count; i++)
+                {
+                    if(normalChar[i] != ' ')
+                    {
+                        Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
+                        break;
+                    }
+                    if(i == normalChar.Count && italicChar.Count == 0)
+                    {
+                        Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Normal);
+                    }
+                }
+
+                //if(Selection.Text.EndsWith(" "))
+                //{
+                //    //Make the selection italic
+                //    Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
+                //    //Reverts to the original selection
+                //    Selection.Select(Selection.Start, originalSelectionEnd);
+                //}
+                //else
+                //{
+                //    //Reverts to the original selection
+                //    Selection.Select(Selection.Start, originalSelectionEnd);
+                //    //Make the selection italic
+                //    Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
+                //}
+            }
             else
+            {
                 //Make it normal
                 Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Normal);
+            }
         }
 
         //TODO: FIX THESE TWO. I DON'T UNDERSTAND WHAT IS HAPPENING!!!

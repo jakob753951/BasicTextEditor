@@ -2,9 +2,6 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Windows.Documents;
 
 namespace BasicTextEditorDev
@@ -12,7 +9,7 @@ namespace BasicTextEditorDev
     public class BasicTextEditor : RichTextBox
     {
 
-        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(RichTextBox), typeof (BasicTextEditor));
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
 
         private ContextMenu cm = new ContextMenu();
 
@@ -41,7 +38,7 @@ namespace BasicTextEditorDev
             for(int i = 0; i < menuItemNames.Length; i++)
             {
                 //If i is not 0, and even
-                if(i!= 0 && i % 2 == 0)
+                if(i != 0 && i % 2 == 0)
                     //Add a separator
                     cm.Items.Add(new Separator());
 
@@ -126,22 +123,16 @@ namespace BasicTextEditorDev
             }
         }
 
-        //TODO: FIX THESE TWO. I DON'T UNDERSTAND WHAT IS HAPPENING!!!
         //TODO: Add hover event
-        private void IncreaseFontSize(object sender, RoutedEventArgs e)
-        {
-            Selection.ApplyPropertyValue(FontSizeProperty, FontSize++);
-        }
+        private void IncreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
 
-        private void DecreaseFontSize(object sender, RoutedEventArgs e)
-        {
-            Selection.ApplyPropertyValue(FontSizeProperty, FontSize--);
-        }
+        private void DecreaseFontSize(object sender, RoutedEventArgs e) =>
+               new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
-           //TODO: Find and use a ColorPicker for this (somehow)
-           Selection.ApplyPropertyValue(ForegroundProperty, $"#{(123456).ToString()}");
+            //TODO: Find and use a ColorPicker for this (somehow)
+            //Selection.ApplyPropertyValue(ForegroundProperty, $"#{(123456).ToString()}");
         }
 
         private void AddLink(object sender, RoutedEventArgs e)
@@ -151,7 +142,7 @@ namespace BasicTextEditorDev
 
         private void ContextMenuClick(object sender, RoutedEventArgs e)
         {
-            MenuItem[] mi = new MenuItem[] { (MenuItem)ContextMenu.Items.GetItemAt(0), (MenuItem)ContextMenu.Items.GetItemAt(1)};
+            MenuItem[] mi = new MenuItem[] { (MenuItem)ContextMenu.Items.GetItemAt(0), (MenuItem)ContextMenu.Items.GetItemAt(1) };
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() == FontWeights.Bold.ToString())
                 mi[0].IsChecked = true;
             else

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Diagnostics;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace BasicTextEditorDev
@@ -31,12 +33,8 @@ namespace BasicTextEditorDev
             //Assign click events to their respective eventHandlers
             menuItems[0].Click += new RoutedEventHandler(ToggleBold);
             menuItems[1].Click += new RoutedEventHandler(ToggleItalic);
-            //menuItems[2].MouseEnter += new MouseEventHandler(IncreaseFontSize);
             menuItems[2].Click += new RoutedEventHandler(IncreaseFontSize);
-            //menuItems[2].MouseLeave += new MouseEventHandler(DecreaseFontSize);
-            //menuItems[3].MouseEnter += new MouseEventHandler(DecreaseFontSize);
             menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
-            //menuItems[3].MouseLeave += new MouseEventHandler(IncreaseFontSize);
             menuItems[4].Click += new RoutedEventHandler(ChangeColour);
             menuItems[5].Click += new RoutedEventHandler(AddLink);
 
@@ -56,6 +54,10 @@ namespace BasicTextEditorDev
             ContextMenu = cm;
             ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
             AutoWordSelection = false;
+
+            IsDocumentEnabled = true;
+            IsReadOnly = false;
+            Document.Blocks.FirstBlock.Margin = new Thickness(0);
         }
 
         private void ToggleBold(object sender, RoutedEventArgs e)
@@ -66,10 +68,10 @@ namespace BasicTextEditorDev
                 //The position of the last char in the selection
                 TextPointer originalSelectionEnd = Selection.End;
                 //The position of the char after the last char in the selection
-                TextPointer tempSelectionEnd = Selection.End.GetPositionAtOffset(1);
+                TextPointer SelectionEndNext = Selection.End.GetPositionAtOffset(1);
 
                 //Expands the selection by 1 char to the right
-                Selection.Select(Selection.Start, tempSelectionEnd);
+                Selection.Select(Selection.Start, SelectionEndNext);
 
                 //Checks if the last char is whitespace
                 if(Selection.Text.EndsWith(" "))
@@ -102,9 +104,9 @@ namespace BasicTextEditorDev
                 //The position of the last character in the selection
                 TextPointer originalSelectionEnd = Selection.End;
                 //The position of the character after the last character in the selection
-                TextPointer tempSelectionEnd = Selection.End.GetPositionAtOffset(1);
+                TextPointer SelectionEndNext = Selection.End.GetPositionAtOffset(1);
 
-                Selection.Select(Selection.Start, tempSelectionEnd);
+                Selection.Select(Selection.Start, SelectionEndNext);
 
                 if(Selection.Text.EndsWith(" "))
                 {
@@ -115,7 +117,7 @@ namespace BasicTextEditorDev
                 }
                 else
                 {
-                    //Reverts to the original selection
+                    //Revert to the original selection
                     Selection.Select(Selection.Start, originalSelectionEnd);
                     //Make the selection italic
                     Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
@@ -145,7 +147,33 @@ namespace BasicTextEditorDev
 
         private void AddLink(object sender, RoutedEventArgs e)
         {
-            //TODO: Add functionality
+            //Makes sure text is selected
+            if(Selection != null)
+            {
+                //Initilizes a window for the user to write a hyperlink
+                AddHyperlink ahl = new AddHyperlink();
+                //If the window is closed by pressing 'OK'
+                if(ahl.ShowDialog() == true)
+                {
+                    //A new hyperlink object, which is inserted at the points specified in arguements
+                    Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
+                    {
+                        //Makes the hyperlink clickable
+                        IsEnabled = true,
+                        //Adds the user-added hyperlink to the hyperlink object
+                        NavigateUri = new Uri(ahl.Hyperlink, UriKind.RelativeOrAbsolute)
+                    };
+
+                    if(!link.NavigateUri.IsAbsoluteUri)
+                    {
+                        link.NavigateUri = new Uri("http://" + link.NavigateUri);
+                    }
+
+                    //Makes the hyperlink open a new window in the default browser
+                    link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
+                    MessageBox.Show("Invalid URL", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void ContextMenuClick(object sender, RoutedEventArgs e)

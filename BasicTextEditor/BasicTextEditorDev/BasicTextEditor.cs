@@ -171,6 +171,7 @@ namespace BasicTextEditorDev
                             NavigateUri = new Uri(ahl.Hyperlink, UriKind.RelativeOrAbsolute)
                         };
 
+                        //Makes the uri absolute if it is not
                         if(link.NavigateUri.IsAbsoluteUri != true)
                         {
                             link.NavigateUri = new Uri("http://" + link.NavigateUri);

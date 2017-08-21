@@ -191,6 +191,7 @@ namespace BasicTextEditorDev
         private void ContextMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem[] mi = new MenuItem[] { (MenuItem)ContextMenu.Items.GetItemAt(0), (MenuItem)ContextMenu.Items.GetItemAt(1)};
+
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() == FontWeights.Bold.ToString())
                 mi[0].IsChecked = true;
             else

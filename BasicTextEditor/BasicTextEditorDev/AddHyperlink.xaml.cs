@@ -24,13 +24,16 @@ namespace BasicTextEditorDev
             InitializeComponent();
         }
 
-        public string Hyperlink { get => "http://www." + txtBoxHyperlink.Text; }
+        //A string with the url
+        public string Hyperlink { get => txtBoxHyperlink.Text; }
 
+        //Closes the window with a 'true' flag
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
 
+        // Closes the window
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             Close();

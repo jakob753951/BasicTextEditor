@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Windows.Documents;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace BasicTextEditorDev
 {
@@ -160,13 +161,22 @@ namespace BasicTextEditorDev
                 if(ahl.ShowDialog() == true)
                 {
                     //A new hyperlink object, which is inserted at the points specified in arguements
-                    Hyperlink link = new Hyperlink(Selection.Start, Selection.End);
-                    //Makes the hyperlink clickable
-                    link.IsEnabled = true;
-                    //Adds the user-added hyperlink to the hyperlink object
-                    link.NavigateUri = new Uri(ahl.Hyperlink);
+                    Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
+                    {
+                        //Makes the hyperlink clickable
+                        IsEnabled = true,
+                        //Adds the user-added hyperlink to the hyperlink object
+                        NavigateUri = new Uri(ahl.Hyperlink, UriKind.RelativeOrAbsolute)
+                    };
+
+                    if(link.NavigateUri.IsAbsoluteUri != true)
+                    {
+                        link.NavigateUri = new Uri("http://" + link.NavigateUri);
+                    }
+
                     //Makes the hyperlink open a new window in the default browser
                     link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
+                    MessageBox.Show("Invalid URL", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

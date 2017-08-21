@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace BasicTextEditorDev
 {
@@ -30,8 +31,12 @@ namespace BasicTextEditorDev
             //Assign click events to their respective eventHandlers
             menuItems[0].Click += new RoutedEventHandler(ToggleBold);
             menuItems[1].Click += new RoutedEventHandler(ToggleItalic);
+            menuItems[2].MouseEnter += new MouseEventHandler(IncreaseFontSize);
             menuItems[2].Click += new RoutedEventHandler(IncreaseFontSize);
+            menuItems[2].MouseLeave += new MouseEventHandler(DecreaseFontSize);
+            menuItems[3].MouseEnter += new MouseEventHandler(DecreaseFontSize);
             menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
+            menuItems[3].MouseLeave += new MouseEventHandler(IncreaseFontSize);
             menuItems[4].Click += new RoutedEventHandler(ChangeColour);
             menuItems[5].Click += new RoutedEventHandler(AddLink);
 
@@ -124,10 +129,13 @@ namespace BasicTextEditorDev
         }
 
         //TODO: Add hover event
+        private void IncreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
+
         private void IncreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
 
-        private void DecreaseFontSize(object sender, RoutedEventArgs e) =>
-               new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
+        private void DecreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
+
+        private void DecreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {

@@ -131,7 +131,12 @@ namespace BasicTextEditorDev
         //TODO: Add hover event
         private void IncreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
 
-        private void IncreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
+        private void IncreaseFontSize(object sender, RoutedEventArgs e)
+        {
+            double fsProp = (double)Selection.GetPropertyValue(FontSizeProperty);
+            TextRange tr = new TextRange(Selection.Start, Selection.End);
+            tr.ApplyPropertyValue(FontSizeProperty, fsProp + 1);
+        }
 
         private void DecreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
 

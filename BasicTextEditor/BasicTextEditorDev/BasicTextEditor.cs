@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Windows.Documents;
+using System.Diagnostics;
 
 namespace BasicTextEditorDev
 {
@@ -54,6 +55,10 @@ namespace BasicTextEditorDev
             ContextMenu = cm;
             ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
             AutoWordSelection = false;
+
+            IsDocumentEnabled = true;
+            IsReadOnly = false;
+            Document.Blocks.FirstBlock.Margin = new Thickness(0);
         }
 
         private void ToggleBold(object sender, RoutedEventArgs e)
@@ -64,10 +69,10 @@ namespace BasicTextEditorDev
                 //The position of the last char in the selection
                 TextPointer originalSelectionEnd = Selection.End;
                 //The position of the char after the last char in the selection
-                TextPointer tempSelectionEnd = Selection.End.GetPositionAtOffset(1);
+                TextPointer SelectionEndNext = Selection.End.GetPositionAtOffset(1);
 
                 //Expands the selection by 1 char to the right
-                Selection.Select(Selection.Start, tempSelectionEnd);
+                Selection.Select(Selection.Start, SelectionEndNext);
 
                 //Checks if the last char is whitespace
                 if(Selection.Text.EndsWith(" "))
@@ -100,9 +105,9 @@ namespace BasicTextEditorDev
                 //The position of the last character in the selection
                 TextPointer originalSelectionEnd = Selection.End;
                 //The position of the character after the last character in the selection
-                TextPointer tempSelectionEnd = Selection.End.GetPositionAtOffset(1);
+                TextPointer SelectionEndNext = Selection.End.GetPositionAtOffset(1);
 
-                Selection.Select(Selection.Start, tempSelectionEnd);
+                Selection.Select(Selection.Start, SelectionEndNext);
 
                 if(Selection.Text.EndsWith(" "))
                 {
@@ -113,7 +118,7 @@ namespace BasicTextEditorDev
                 }
                 else
                 {
-                    //Reverts to the original selection
+                    //Revert to the original selection
                     Selection.Select(Selection.Start, originalSelectionEnd);
                     //Make the selection italic
                     Selection.ApplyPropertyValue(FontStyleProperty, FontStyles.Italic);
@@ -146,7 +151,24 @@ namespace BasicTextEditorDev
 
         private void AddLink(object sender, RoutedEventArgs e)
         {
-            //TODO: Add functionality
+            //Makes sure text is selected
+            if(Selection != null)
+            {
+                //Initilizes a window for the user to write a hyperlink
+                AddHyperlink ahl = new AddHyperlink();
+                //If the window is closed by pressing 'OK'
+                if(ahl.ShowDialog() == true)
+                {
+                    //A new hyperlink object, which is inserted at the points specified in arguements
+                    Hyperlink link = new Hyperlink(Selection.Start, Selection.End);
+                    //Makes the hyperlink clickable
+                    link.IsEnabled = true;
+                    //Adds the user-added hyperlink to the hyperlink object
+                    link.NavigateUri = new Uri(ahl.Hyperlink);
+                    //Makes the hyperlink open a new window in the default browser
+                    link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
+                }
+            }
         }
 
         private void ContextMenuClick(object sender, RoutedEventArgs e)

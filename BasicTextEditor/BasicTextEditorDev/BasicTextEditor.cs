@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Collections;
 
 namespace BasicTextEditorDev
 {
@@ -129,18 +130,36 @@ namespace BasicTextEditorDev
         }
 
         //TODO: Add hover event
-        private void IncreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
+        private void IncreaseFontSize(object sender, MouseEventArgs e) => IncreaseFontSize();
 
-        private void IncreaseFontSize(object sender, RoutedEventArgs e)
+        private void IncreaseFontSize(object sender, RoutedEventArgs e) => IncreaseFontSize();
+        private void IncreaseFontSize()
         {
-            double fsProp = (double)Selection.GetPropertyValue(FontSizeProperty);
-            TextRange tr = new TextRange(Selection.Start, Selection.End);
-            tr.ApplyPropertyValue(FontSizeProperty, fsProp + 1);
+            try
+            {
+                new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
+            }
+            catch(InvalidCastException)
+            {
+                MessageBox.Show("Sorry, we do not currently support changing multiple text sizes at once. please select the different sizes individually.", "Function not supported", MessageBoxButton.OK);
+            }
         }
 
-        private void DecreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
+        private void DecreaseFontSize(object sender, MouseEventArgs e) => DecreaseFontSize();
 
-        private void DecreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
+        private void DecreaseFontSize(object sender, RoutedEventArgs e) => DecreaseFontSize();
+
+        private void DecreaseFontSize()
+        {
+            try
+            {
+                new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
+            }
+            catch(InvalidCastException)
+            {
+                MessageBox.Show("Sorry, we do not currently support changing multiple text sizes at once. please select the different sizes individually.", "Function not supported", MessageBoxButton.OK);
+            }
+        }
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {

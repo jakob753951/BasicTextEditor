@@ -61,7 +61,7 @@ namespace BasicTextEditorDev
             ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
             AutoWordSelection = false;
 
-            Document.Blocks.FirstBlock.Margin = new Thickness(0);
+            IsDocumentEnabled = true;
         }
 
         private void ToggleBold(object sender, RoutedEventArgs e)
@@ -137,10 +137,7 @@ namespace BasicTextEditorDev
         //TODO: Add hover event
         private void ChangeFontSize(object sender, MouseEventArgs e) => ChangeFontSize((MenuItem)sender);
         private void ChangeFontSize(object sender, RoutedEventArgs e) => ChangeFontSize((MenuItem)sender);
-        private void ChangeFontSize(MenuItem sender)
-        {
-            Selection.ApplyPropertyValue(FontSizeProperty, double.Parse(sender.Header.ToString()));
-        }
+        private void ChangeFontSize(MenuItem sender) => Selection.ApplyPropertyValue(FontSizeProperty, double.Parse(sender.Header.ToString()));
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {

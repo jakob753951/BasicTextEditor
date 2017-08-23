@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Collections;
 
 namespace BasicTextEditorDev
 {
@@ -18,8 +17,9 @@ namespace BasicTextEditorDev
         public BasicTextEditor()
         {
             DataContext = this;
-            string[] menuItemNames = new string[6] { "Bold", "Italic", "Increase font size", "Decrease font size", "Change colour", "Create link" };
-            MenuItem[] menuItems = new MenuItem[6];
+            string[] menuItemNames = new string[5] { "Bold", "Italic", "Font size", "Change colour", "Create link" };
+            double[] fontSizes = new double[16] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
+            MenuItem[] menuItems = new MenuItem[5];
 
             //Initialize, and set header for the menuItems
             for(int i = 0; i < menuItems.Length; i++)
@@ -27,19 +27,23 @@ namespace BasicTextEditorDev
                 menuItems[i] = new MenuItem() { Header = menuItemNames[i] };
             }
 
+            MenuItem subItem;
+            MenuItem newMenuItems = menuItems[2];
+            for(int j = 0; j < fontSizes.Length; j++)
+            {
+                subItem = new MenuItem() { Header = fontSizes[j] };
+                subItem.Click += ChangeFontSize;
+                newMenuItems.Items.Add(subItem);
+            }
+
+
             //TODO: Check if selected text is bold/italicized, and check/uncheck accordingly before showing
 
             //Assign click events to their respective eventHandlers
             menuItems[0].Click += new RoutedEventHandler(ToggleBold);
             menuItems[1].Click += new RoutedEventHandler(ToggleItalic);
-            menuItems[2].MouseEnter += new MouseEventHandler(IncreaseFontSize);
-            menuItems[2].Click += new RoutedEventHandler(IncreaseFontSize);
-            menuItems[2].MouseLeave += new MouseEventHandler(DecreaseFontSize);
-            menuItems[3].MouseEnter += new MouseEventHandler(DecreaseFontSize);
-            menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
-            menuItems[3].MouseLeave += new MouseEventHandler(IncreaseFontSize);
-            menuItems[4].Click += new RoutedEventHandler(ChangeColour);
-            menuItems[5].Click += new RoutedEventHandler(AddLink);
+            menuItems[3].Click += new RoutedEventHandler(ChangeColour);
+            menuItems[4].Click += new RoutedEventHandler(AddLink);
 
             for(int i = 0; i < menuItemNames.Length; i++)
             {
@@ -130,35 +134,11 @@ namespace BasicTextEditorDev
         }
 
         //TODO: Add hover event
-        private void IncreaseFontSize(object sender, MouseEventArgs e) => IncreaseFontSize();
-
-        private void IncreaseFontSize(object sender, RoutedEventArgs e) => IncreaseFontSize();
-        private void IncreaseFontSize()
+        private void ChangeFontSize(object sender, MouseEventArgs e) => ChangeFontSize((MenuItem)sender);
+        private void ChangeFontSize(object sender, RoutedEventArgs e) => ChangeFontSize((MenuItem)sender);
+        private void ChangeFontSize(MenuItem sender)
         {
-            try
-            {
-                new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
-            }
-            catch(InvalidCastException)
-            {
-                MessageBox.Show("Sorry, we do not currently support changing multiple text sizes at once. please select the different sizes individually.", "Function not supported", MessageBoxButton.OK);
-            }
-        }
-
-        private void DecreaseFontSize(object sender, MouseEventArgs e) => DecreaseFontSize();
-
-        private void DecreaseFontSize(object sender, RoutedEventArgs e) => DecreaseFontSize();
-
-        private void DecreaseFontSize()
-        {
-            try
-            {
-                new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
-            }
-            catch(InvalidCastException)
-            {
-                MessageBox.Show("Sorry, we do not currently support changing multiple text sizes at once. please select the different sizes individually.", "Function not supported", MessageBoxButton.OK);
-            }
+            Selection.ApplyPropertyValue(FontSizeProperty, double.Parse(sender.Header.ToString()));
         }
 
         private void ChangeColour(object sender, RoutedEventArgs e)

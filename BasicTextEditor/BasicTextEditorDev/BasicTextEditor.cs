@@ -19,8 +19,9 @@ namespace BasicTextEditorDev
         public BasicTextEditor()
         {
             DataContext = this;
-            string[] menuItemNames = new string[6] { "Bold", "Italic", "Increase font size", "Decrease font size", "Change colour", "Create link" };
-            MenuItem[] menuItems = new MenuItem[6];
+            string[] menuItemNames = new string[5] { "Bold", "Italic", "Font size", "Change colour", "Create link" };
+            double[] fontSizes = new double[16] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
+            MenuItem[] menuItems = new MenuItem[5];
 
             //Initialize, and set header for the menuItems
             for(int i = 0; i < menuItems.Length; i++)
@@ -28,15 +29,20 @@ namespace BasicTextEditorDev
                 menuItems[i] = new MenuItem() { Header = menuItemNames[i] };
             }
 
-            //TODO: Check if selected text is bold/italicized, and check/uncheck accordingly before showing
+            MenuItem subItem;
+            MenuItem newMenuItems = menuItems[2];
+            for(int j = 0; j < fontSizes.Length; j++)
+            {
+                subItem = new MenuItem() { Header = fontSizes[j] };
+                subItem.Click += ChangeFontSize;
+                newMenuItems.Items.Add(subItem);
+            }
 
             //Assign click events to their respective eventHandlers
             menuItems[0].Click += new RoutedEventHandler(ToggleBold);
             menuItems[1].Click += new RoutedEventHandler(ToggleItalic);
-            menuItems[2].Click += new RoutedEventHandler(IncreaseFontSize);
-            menuItems[3].Click += new RoutedEventHandler(DecreaseFontSize);
-            menuItems[4].Click += new RoutedEventHandler(ChangeColour);
-            menuItems[5].Click += new RoutedEventHandler(AddLink);
+            menuItems[3].Click += new RoutedEventHandler(ChangeColour);
+            menuItems[4].Click += new RoutedEventHandler(AddLink);
 
             for(int i = 0; i < menuItemNames.Length; i++)
             {
@@ -55,8 +61,6 @@ namespace BasicTextEditorDev
             ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
             AutoWordSelection = false;
 
-            IsDocumentEnabled = true;
-            IsReadOnly = false;
             Document.Blocks.FirstBlock.Margin = new Thickness(0);
         }
 
@@ -131,13 +135,12 @@ namespace BasicTextEditorDev
         }
 
         //TODO: Add hover event
-        //private void IncreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
-
-        private void IncreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) + 1);
-
-        //private void DecreaseFontSize(object sender, MouseEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
-
-        private void DecreaseFontSize(object sender, RoutedEventArgs e) => new TextRange(Selection.Start, Selection.End).ApplyPropertyValue(TextElement.FontSizeProperty, (double)Selection.GetPropertyValue(FontSizeProperty) - 1);
+        private void ChangeFontSize(object sender, MouseEventArgs e) => ChangeFontSize((MenuItem)sender);
+        private void ChangeFontSize(object sender, RoutedEventArgs e) => ChangeFontSize((MenuItem)sender);
+        private void ChangeFontSize(MenuItem sender)
+        {
+            Selection.ApplyPropertyValue(FontSizeProperty, double.Parse(sender.Header.ToString()));
+        }
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {

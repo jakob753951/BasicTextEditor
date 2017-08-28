@@ -171,10 +171,10 @@ namespace BasicTextEditorDev
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
             //Initilizes a window for the user to write a hyperlink
-            AddHyperlink ahl = new AddHyperlink(AddHyperlink.WindowUse.Hex);
+            UserInput ui = new UserInput(UserInput.WindowUse.Hex);
             //If the window is closed by pressing 'OK'
-            if(ahl.ShowDialog() == true)
-                Selection.ApplyPropertyValue(ForegroundProperty, $"#{(ahl.TextResult).ToString()}");
+            if(ui.ShowDialog() == true)
+                Selection.ApplyPropertyValue(ForegroundProperty, $"#{(ui.TextResult).ToString()}");
         }
 
         /// <summary>
@@ -188,9 +188,9 @@ namespace BasicTextEditorDev
             if(Selection != null)
             {
                 //Initilizes a window for the user to write a hyperlink
-                AddHyperlink ahl = new AddHyperlink(AddHyperlink.WindowUse.Link);
+                UserInput ui = new UserInput(UserInput.WindowUse.Link);
                 //If the window is closed by pressing 'OK'
-                if(ahl.ShowDialog() == true)
+                if(ui.ShowDialog() == true)
                 {
                     //A new hyperlink object, which is inserted at the points specified in arguements
                     Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
@@ -198,7 +198,7 @@ namespace BasicTextEditorDev
                         //Makes the hyperlink clickable
                         IsEnabled = true,
                         //Adds the user-added hyperlink to the hyperlink object
-                        NavigateUri = new Uri(ahl.TextResult, UriKind.RelativeOrAbsolute)
+                        NavigateUri = new Uri(ui.TextResult, UriKind.RelativeOrAbsolute)
                     };
 
                     //If the url is not absolute, make it absolute

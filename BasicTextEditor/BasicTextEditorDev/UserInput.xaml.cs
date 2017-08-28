@@ -18,24 +18,24 @@ namespace BasicTextEditorDev
     /// <summary>
     /// Interaction logic for AddHyperlink.xaml
     /// </summary>
-    public partial class AddHyperlink : Window
+    public partial class UserInput : Window
     {
         public enum WindowUse { Hex, Link }
         WindowUse use;
-        public AddHyperlink(WindowUse wu)
+        public UserInput(WindowUse wu)
         {
             InitializeComponent();
             if(wu == WindowUse.Hex)
             {
                 use = WindowUse.Hex;
                 Title = "Hex colour";
-                LabelHL.Content = "Please enter a hex value:";
+                LabelUI.Content = "Please enter a hex value:";
             }
             else
                 use = WindowUse.Link;
         }
         //A string with the url
-        public string TextResult => TextBoxHyperlink.Text;
+        public string TextResult => TextBoxUserInput.Text;
 
         //Closes the window with a 'true' flag
         private void ButtonOK_Click(object sender, RoutedEventArgs e)

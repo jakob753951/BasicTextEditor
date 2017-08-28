@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Windows.Input;
+using Microsoft.VisualBasic;
 
 namespace BasicTextEditorDev
 {
@@ -149,11 +150,24 @@ namespace BasicTextEditorDev
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
-            //Initilizes a window for the user to write a hyperlink
-            AddHyperlink ahl = new AddHyperlink(AddHyperlink.WindowUse.Hex);
-            //If the window is closed by pressing 'OK'
-            if(ahl.ShowDialog() == true)
-                Selection.ApplyPropertyValue(ForegroundProperty, $"#{(ahl.TextResult).ToString()}");
+            string userInput;
+            bool loop = true;
+            do
+            {
+                userInput = Interaction.InputBox("Please enter a hex value:", "Hex colour", "000000", -1, -1);
+
+                if(string.IsNullOrEmpty(userInput))
+                    return;
+
+                MatchCollection matches = Regex.Matches(userInput, @"^(([\d]|[a-f]|[A-F]){6}|([\d]|[a-f]|[A-F]){3})$");
+
+                if(matches.Count > 0)
+                    loop = false;
+                else
+                    MessageBox.Show("You need to enter a valid hex-code");
+            }
+            while(loop);
+            Selection.ApplyPropertyValue(ForegroundProperty, $"#{userInput}");
         }
 
         private void AddLink(object sender, RoutedEventArgs e)

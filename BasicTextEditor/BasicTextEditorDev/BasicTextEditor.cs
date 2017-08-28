@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -15,6 +16,8 @@ namespace BasicTextEditorDev
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(RichTextBox), typeof(BasicTextEditor));
 
         private ContextMenu cm = new ContextMenu();
+
+        private double previousFontSize;
 
         public BasicTextEditor()
         {
@@ -35,6 +38,7 @@ namespace BasicTextEditorDev
             {
                 subItem = new MenuItem() { Header = fontSizes[j] };
                 subItem.Click += ChangeFontSize;
+                subItem.MouseEnter += FontSizeEnter;
                 newMenuItems.Items.Add(subItem);
             }
 
@@ -135,14 +139,21 @@ namespace BasicTextEditorDev
         }
 
         //TODO: Add hover event
-        private void ChangeFontSize(object sender, MouseEventArgs e) => ChangeFontSize((MenuItem)sender);
+        private void FontSizeEnter(object sender, MouseEventArgs e)
+        {
+            previousFontSize = double.Parse(Selection.GetPropertyValue(FontSizeProperty).ToString());
+            ChangeFontSize((MenuItem)sender);
+        }
         private void ChangeFontSize(object sender, RoutedEventArgs e) => ChangeFontSize((MenuItem)sender);
         private void ChangeFontSize(MenuItem sender) => Selection.ApplyPropertyValue(FontSizeProperty, double.Parse(sender.Header.ToString()));
 
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
-            //TODO: Find and use a ColorPicker for this (somehow)
-            //Selection.ApplyPropertyValue(ForegroundProperty, $"#{(123456).ToString()}");
+            //Initilizes a window for the user to write a hyperlink
+            AddHyperlink ahl = new AddHyperlink(AddHyperlink.WindowUse.Hex);
+            //If the window is closed by pressing 'OK'
+            if(ahl.ShowDialog() == true)
+                Selection.ApplyPropertyValue(ForegroundProperty, $"#{(ahl.TextResult).ToString()}");
         }
 
         private void AddLink(object sender, RoutedEventArgs e)
@@ -151,7 +162,7 @@ namespace BasicTextEditorDev
             if(Selection != null)
             {
                 //Initilizes a window for the user to write a hyperlink
-                AddHyperlink ahl = new AddHyperlink();
+                AddHyperlink ahl = new AddHyperlink(AddHyperlink.WindowUse.Link);
                 //If the window is closed by pressing 'OK'
                 if(ahl.ShowDialog() == true)
                 {
@@ -161,7 +172,7 @@ namespace BasicTextEditorDev
                         //Makes the hyperlink clickable
                         IsEnabled = true,
                         //Adds the user-added hyperlink to the hyperlink object
-                        NavigateUri = new Uri(ahl.Hyperlink, UriKind.RelativeOrAbsolute)
+                        NavigateUri = new Uri(ahl.TextResult, UriKind.RelativeOrAbsolute)
                     };
 
                     if(!link.NavigateUri.IsAbsoluteUri)

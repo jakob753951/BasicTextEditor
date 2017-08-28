@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace BasicTextEditorDev
 {
@@ -19,24 +20,39 @@ namespace BasicTextEditorDev
     /// </summary>
     public partial class AddHyperlink : Window
     {
-        public AddHyperlink()
+        public enum WindowUse { Hex, Link }
+        WindowUse use;
+        public AddHyperlink(WindowUse wu)
         {
             InitializeComponent();
+            if(wu == WindowUse.Hex)
+            {
+                use = WindowUse.Hex;
+                Title = "Hex colour";
+                LabelHL.Content = "Please enter a hex value:";
+            }
+            else
+                use = WindowUse.Link;
         }
-
         //A string with the url
-        public string Hyperlink { get => txtBoxHyperlink.Text; }
+        public string TextResult => TextBoxHyperlink.Text;
 
         //Closes the window with a 'true' flag
-        private void BtnOK_Click(object sender, RoutedEventArgs e)
+        private void ButtonOK_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            if(use == WindowUse.Hex)
+            {
+                MatchCollection matches = Regex.Matches(TextResult, @"^(([\d]|[a-f]|[A-F]){6}|([\d]|[a-f]|[A-F]){3})$");
+                if(matches.Count > 0)
+                    DialogResult = true;
+                else
+                    MessageBox.Show("You need to enter a valid hex-code");
+            }
+            else
+                DialogResult = true;
         }
 
         // Closes the window
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void ButtonCancel_Click(object sender, RoutedEventArgs e) => Close();
     }
 }

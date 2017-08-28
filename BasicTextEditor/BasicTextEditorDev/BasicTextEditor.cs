@@ -176,9 +176,7 @@ namespace BasicTextEditorDev
                     };
 
                     if(!link.NavigateUri.IsAbsoluteUri)
-                    {
                         link.NavigateUri = new Uri("http://" + link.NavigateUri);
-                    }
 
                     //Makes the hyperlink open a new window in the default browser
                     link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());

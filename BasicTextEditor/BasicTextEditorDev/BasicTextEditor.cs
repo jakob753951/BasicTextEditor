@@ -18,8 +18,6 @@ namespace BasicTextEditorDev
 
         private ContextMenu cm = new ContextMenu();
 
-        private double previousFontSize;
-
         public BasicTextEditor()
         {
             DataContext = this;
@@ -33,13 +31,13 @@ namespace BasicTextEditorDev
                 menuItems[i] = new MenuItem() { Header = menuItemNames[i] };
             }
 
+            //Initialize, set headers and set event handlers for font size sub menu
             MenuItem subItem;
             MenuItem newMenuItems = menuItems[2];
             for(int j = 0; j < fontSizes.Length; j++)
             {
                 subItem = new MenuItem() { Header = fontSizes[j] };
                 subItem.Click += ChangeFontSize;
-                subItem.MouseEnter += FontSizeEnter;
                 newMenuItems.Items.Add(subItem);
             }
 
@@ -49,10 +47,11 @@ namespace BasicTextEditorDev
             menuItems[3].Click += new RoutedEventHandler(ChangeColour);
             menuItems[4].Click += new RoutedEventHandler(AddLink);
 
+            //Add menu items to context menu
             for(int i = 0; i < menuItemNames.Length; i++)
             {
-                //If i is not 0, and even
-                if(i != 0 && i % 2 == 0)
+                //If i is 2, and even
+                if(i == 2)
                     //Add a separator
                     cm.Items.Add(new Separator());
 
@@ -66,9 +65,15 @@ namespace BasicTextEditorDev
             ContextMenu.Opened += new RoutedEventHandler(ContextMenuClick);
             AutoWordSelection = false;
 
+            //Needed for hyperlink functionality
             IsDocumentEnabled = true;
         }
 
+        /// <summary>
+        /// Toggle bold on the selected text
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event itself</param>
         private void ToggleBold(object sender, RoutedEventArgs e)
         {
             //If the selection isn't entirely in bold text
@@ -105,6 +110,11 @@ namespace BasicTextEditorDev
             }
         }
 
+        /// <summary>
+        /// Toggle italic on the selected text
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event itself</param>
         private void ToggleItalic(object sender, RoutedEventArgs e)
         {
             //If the selection isn't entirely in italics
@@ -139,15 +149,24 @@ namespace BasicTextEditorDev
             }
         }
 
-        //TODO: Add hover event
-        private void FontSizeEnter(object sender, MouseEventArgs e)
-        {
-            previousFontSize = double.Parse(Selection.GetPropertyValue(FontSizeProperty).ToString());
-            ChangeFontSize((MenuItem)sender);
-        }
+        /// <summary>
+        /// Calls event to set font size of the selected text
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event itself</param>
         private void ChangeFontSize(object sender, RoutedEventArgs e) => ChangeFontSize((MenuItem)sender);
+
+        /// <summary>
+        /// Sets the font size of the selected text
+        /// </summary>
+        /// <param name="sender">The sender as of the previous event</param>
         private void ChangeFontSize(MenuItem sender) => Selection.ApplyPropertyValue(FontSizeProperty, double.Parse(sender.Header.ToString()));
 
+        /// <summary>
+        /// Changes the colour of the selected text
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event itself</param>
         private void ChangeColour(object sender, RoutedEventArgs e)
         {
             string userInput;
@@ -170,43 +189,72 @@ namespace BasicTextEditorDev
             Selection.ApplyPropertyValue(ForegroundProperty, $"#{userInput}");
         }
 
+        /// <summary>
+        /// Adds a clickable hyperlink to the selected text
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event itself</param>
         private void AddLink(object sender, RoutedEventArgs e)
         {
             //Makes sure text is selected
             if(Selection != null)
             {
-                //Initilizes a window for the user to write a hyperlink
-                AddHyperlink ahl = new AddHyperlink(AddHyperlink.WindowUse.Link);
-                //If the window is closed by pressing 'OK'
-                if(ahl.ShowDialog() == true)
+                string input;
+                while(true)
                 {
-                    //A new hyperlink object, which is inserted at the points specified in arguements
-                    Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
+                    input = Microsoft.VisualBasic.Interaction.InputBox("Input url", "Add Hyperlink", "").ToLower();
+                    if(string.IsNullOrEmpty(input))
+                        return;
+
+                    if(!(input.StartsWith("http://") || input.StartsWith("https://")))
                     {
-                        //Makes the hyperlink clickable
-                        IsEnabled = true,
-                        //Adds the user-added hyperlink to the hyperlink object
-                        NavigateUri = new Uri(ahl.TextResult, UriKind.RelativeOrAbsolute)
-                    };
+                        input = "http://" + input;
+                    }
 
-                    if(!link.NavigateUri.IsAbsoluteUri)
-                        link.NavigateUri = new Uri("http://" + link.NavigateUri);
+                    if(Uri.TryCreate(input, UriKind.Absolute, out Uri uriInput) && (uriInput.Scheme == Uri.UriSchemeHttp || uriInput.Scheme == Uri.UriSchemeHttps))
+                    {
+                        //A new hyperlink object, which is inserted at the points specified in arguements
+                        Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
+                        {
+                            //Makes the hyperlink clickable
+                            IsEnabled = true,
+                            //Adds the user-added hyperlink to the hyperlink object
+                            NavigateUri = new Uri(input, UriKind.RelativeOrAbsolute)
+                        };
 
-                    //Makes the hyperlink open a new window in the default browser
-                    link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
-                    MessageBox.Show("Invalid URL", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        //If the url is not absolute, make it absolute
+                        if(!link.NavigateUri.IsAbsoluteUri)
+                            link.NavigateUri = new Uri("http://" + link.NavigateUri);
+
+                        //Makes the hyperlink open a new window in the default browser
+                        link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
+                        return;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid URL");
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Checks or unchecks the checkmarks of the first two menu items
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event itself</param>
         private void ContextMenuClick(object sender, RoutedEventArgs e)
         {
+            //Gets the first two menu items
             MenuItem[] mi = new MenuItem[] { (MenuItem)ContextMenu.Items.GetItemAt(0), (MenuItem)ContextMenu.Items.GetItemAt(1) };
+
+            //Marks the menu item as checked, if the selected text is bold
             if(Selection.GetPropertyValue(FontWeightProperty).ToString() == FontWeights.Bold.ToString())
                 mi[0].IsChecked = true;
             else
                 mi[0].IsChecked = false;
 
+            //Marks the menu item as checked, if the selected text is italic
             if(Selection.GetPropertyValue(FontStyleProperty).ToString() == FontStyles.Italic.ToString())
                 mi[1].IsChecked = true;
             else

@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("BasicTextEditorDev")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ineffective-Hexa-Fork")]
 [assembly: AssemblyProduct("BasicTextEditorDev")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]

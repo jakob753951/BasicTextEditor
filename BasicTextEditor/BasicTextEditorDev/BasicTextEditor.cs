@@ -17,8 +17,6 @@ namespace BasicTextEditorDev
 
         private ContextMenu cm = new ContextMenu();
 
-        private double previousFontSize;
-
         public BasicTextEditor()
         {
             DataContext = this;
@@ -187,27 +185,41 @@ namespace BasicTextEditorDev
             //Makes sure text is selected
             if(Selection != null)
             {
-                //Initilizes a window for the user to write a hyperlink
-                UserInput ui = new UserInput(UserInput.WindowUse.Link);
-                //If the window is closed by pressing 'OK'
-                if(ui.ShowDialog() == true)
+                string input;
+                while(true)
                 {
-                    //A new hyperlink object, which is inserted at the points specified in arguements
-                    Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
+                    input = Microsoft.VisualBasic.Interaction.InputBox("Input url", "Add Hyperlink", "").ToLower();
+                    if(string.IsNullOrEmpty(input))
+                        return;
+
+                    if(!(input.StartsWith("http://") || input.StartsWith("https://")))
                     {
-                        //Makes the hyperlink clickable
-                        IsEnabled = true,
-                        //Adds the user-added hyperlink to the hyperlink object
-                        NavigateUri = new Uri(ui.TextResult, UriKind.RelativeOrAbsolute)
-                    };
+                        input = "http://" + input;
+                    }
 
-                    //If the url is not absolute, make it absolute
-                    if(!link.NavigateUri.IsAbsoluteUri)
-                        link.NavigateUri = new Uri("http://" + link.NavigateUri);
+                    if(Uri.TryCreate(input, UriKind.Absolute, out Uri uriInput) && (uriInput.Scheme == Uri.UriSchemeHttp || uriInput.Scheme == Uri.UriSchemeHttps))
+                    {
+                        //A new hyperlink object, which is inserted at the points specified in arguements
+                        Hyperlink link = new Hyperlink(Selection.Start, Selection.End)
+                        {
+                            //Makes the hyperlink clickable
+                            IsEnabled = true,
+                            //Adds the user-added hyperlink to the hyperlink object
+                            NavigateUri = new Uri(input, UriKind.RelativeOrAbsolute)
+                        };
 
-                    //Makes the hyperlink open a new window in the default browser
-                    link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
-                    MessageBox.Show("Invalid URL", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        //If the url is not absolute, make it absolute
+                        if(!link.NavigateUri.IsAbsoluteUri)
+                            link.NavigateUri = new Uri("http://" + link.NavigateUri);
+
+                        //Makes the hyperlink open a new window in the default browser
+                        link.RequestNavigate += (_sender, args) => Process.Start(args.Uri.ToString());
+                        return;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid URL");
+                    }
                 }
             }
         }

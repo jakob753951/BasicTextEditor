@@ -202,11 +202,11 @@ namespace BasicTextEditorDev
                 string input;
                 while(true)
                 {
-                    input = Microsoft.VisualBasic.Interaction.InputBox("Input url", "Add Hyperlink", "").ToLower();
+                    input = Interaction.InputBox("Input url", "Add Hyperlink", "");
                     if(string.IsNullOrEmpty(input))
                         return;
 
-                    if(!(input.StartsWith("http://") || input.StartsWith("https://")))
+                    if(!(input.ToLower().StartsWith("http://") || input.ToLower().StartsWith("https://")))
                     {
                         input = "http://" + input;
                     }
